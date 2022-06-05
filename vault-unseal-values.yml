@@ -1,0 +1,7 @@
+schedule: '"*/5 * * * *"' # Runs every 30 mins.
+vault:
+  address: http://192.168.2.188:30000
+  shards:
+    - "mtJNtpZinKuNpfkFEcLkNjkSRaxQmsGHV/k4RFCWEnRi"
+    - "MB2P5U9atU/mOr/tOeZSJQpSZ8fmbDNIzg3DBZZzbGQM"
+    - "iZQNmOwAvxn+wkMmE7l97vjf5n3q7DvOpGapYoeKvWkz"

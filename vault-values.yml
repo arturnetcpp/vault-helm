@@ -1,0 +1,85 @@
+
+metrics:
+    enabled: true
+# Will disable vault agent injection
+injector:
+    enabled: false
+# If true, or "-" with global.enabled true, Vault server will be installed.
+server:
+  enabled: true
+  image:
+    repository: "hashicorp/vault"
+    tag: "1.10.3"
+# Overrides the default Image Pull Policy
+    pullPolicy: IfNotPresent
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
+# Enables a headless service to be used by the Vault Statefulset
+  service:
+    enabled: true
+# If type is set to "NodePort", a specific nodePort value can be configured
+    type: NodePort
+    nodePort: 30000
+# Port on which Vault server is listening
+    port: 8200
+# Target port to which the service should be mapped to
+    targetPort: 8200
+# This configures the Vault Statefulset to create a PVC for data
+# storage when using the file or raft backend storage engines.
+  dataStorage:
+    enabled: true
+    size: 4Gi
+    mountPath: "/vault/data"
+    storageClass: nfs-client 
+    accessMode: ReadWriteOnce
+    annotations: {}
+# This configures the Vault Statefulset to create a PVC for audit
+# logs.  Once Vault is deployed, initialized and unsealed, Vault must
+# be configured to use this for audit logs.  This will be mounted to
+# /vault/audit
+  auditStorage:
+    enabled: true
+    size: 2Gi
+    mountPath: "/vault/audit"
+    storageClass: nfs-client
+    accessMode: ReadWriteOnce
+    annotations: {}
+# Run Vault in "dev" mode. This requires no further setup, no state management,
+# and no initialization. This is useful for experimenting with Vault without
+# needing to unseal, store keys, et. al. All data is lost on restart - do not
+# use dev mode for anything other than experimenting.
+  dev:
+    enabled: false
+  ha:
+    enabled: false
+# Enables Vault's integrated Raft storage.  Unlike the typical HA modes where
+# Vault's persistence is external (such as Consul), enabling Raft mode will create
+# persistent volumes for Vault to store data according to the configuration under server.dataStorage.
+    raft:
+      enabled: true
+      setNodeId: false
+# Configuration files are stored in ConfigMaps
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+        storage "raft" {
+          path = "/vault/data"
+        }
+    serviceAccount:
+      create: true
+      name: "vault-service-account"
+  ui:
+  enabled: true
+  publishNotReadyAddresses: true
+  activeVaultPodOnly: false
+  serviceType: "ClusterIP"
+  serviceNodePort: 30000
+  externalPort: 8200
+  targetPort: 8200
+
