@@ -1,0 +1,32 @@
+---
+# Source: vault-unseal-cronjob/templates/cronjob.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: vault-unseal-cronjob
+  labels:
+    chart: "vault-unseal-cronjob-0.4.0"
+spec:
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: vault-unseal-cronjob
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: vault-unseal-cronjob
+              image: "ghcr.io/omegion/vault-unseal:v0.1.0"
+              imagePullPolicy: IfNotPresent
+              args:
+                - unseal
+                - --address=http://192.168.2.188:30000
+
+                - --shard=cDztejskkqxoCQwN3/4IYkp8ASktyDIrXKVgMDDHoLlS
+
+                - --shard=U7BgiBmqB8mM4WH+keJ6DeitcbokTHEnAc0XRbzmCUqb
+
+                - --shard=az8iUarPA78pSBoYpadl7A2iCRkRUGoP7gBbTIrJtMyu
