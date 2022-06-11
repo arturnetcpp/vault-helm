@@ -1,8 +1,8 @@
 # vault-helm
 
-The vault helm chart that we will be using creates vault serviceaccount, clusterrole, clusterrolebinding, statefulset, configmap, secret, services and pvc. But before using the helm chart to create kubernetes resources for vault, we need to configure storage class.
+The vault helm chart that we will be using creates vault serviceaccount, clusterrole, clusterrolebinding, statefulset, configmap, secret, services and pvc. But before using the helm chart to create kubernetes resources for vault, we need to configure storage class and nfs client provisioner, which is an automatic provisioner for Kubernetes that uses your already configured NFS server, automatically creating Persistent Volumes.
 
-To create the storage class:
+To create the storage class and nfs client provisioner:
 
 helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner --set nfs.server=$NFS_SERVER_IP --set nfs.path=/nfs/helm/vault
 
